@@ -21,7 +21,7 @@
 		map = L.map(map).setView([47.0576, 6.9563], 15);
 		var hash = new L.Hash(map);
 		map._initPathRoot();
-		//var geojsonURL = "/api/1/map-version/3/{z}/{x}/{y}.json";
+		var geojsonURL = "/api/1/map-version/3/vector/{z}/{x}/{y}.json";
 		new L.TileLayer.d3_geoJSON(geojsonURL, {class:"river"}).addTo(map);
 	})();
 

@@ -1,0 +1,20 @@
+{
+  "name": "geojson",
+  "version": "1.0.0",
+  "description": "A directed and undirected multi-graph library",
+  "author": "Ilya Kharlamov <ilya.kharlamov@gmail.com>",
+  "main": "index.js",
+  "keywords": [
+    "geojson",
+    "algorithms"
+  ],
+  "dependencies": {
+    "express": "4.13.3",
+    "lodash": "2.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ilyakharlamov/geojson.git"
+  },
+  "license": "MIT"
+}

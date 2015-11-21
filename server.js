@@ -2,6 +2,7 @@ var express = require('express');
 var geoutil = require('./lib/geoutil');
 var sprintf = require('sprintf').sprintf;
 var query = require('pg-query');
+var zoomrules = require('./lib/zoomrules').zoomrules;
 var _ = require('lodash');
 var app = express();
 app.use("/static", express.static(__dirname + '/static'));
@@ -15,7 +16,7 @@ var dbcredentials = sprintf("postgres://%s:%s@%s:%s/%s", dbconfig.username, dbco
 console.log("dbcredentials", dbcredentials);
 query.connectionParameters = dbcredentials;
 
-query('select min(kmh) as kmhmin, max(kmh) kmhmax, 15 maxzoom, 3 mapversion from ch_2po_4pgr', [], function(err, rows, result) {
+query('select min(kmh) as kmhmin, max(kmh) kmhmax, 18 maxzoom, 3 mapversion from ch_2po_4pgr', [], function(err, rows, result) {
   var constants = _.first(rows);
   var zoomToLessOrEqualsKmh = {};
   app.get('/api/1/constants', function (req, res, next) {
@@ -39,7 +40,7 @@ query('select min(kmh) as kmhmin, max(kmh) kmhmax, 15 maxzoom, 3 mapversion from
 
         var ltrb = geoutil.ltrb(z,x,y);
         
-        var sqlparams = [zoomToLessOrEqualsKmh[z], ltrb.l, ltrb.t, ltrb.r, ltrb.b]
+        var sqlparams = [zoomrules(z).kmh, ltrb.l, ltrb.t, ltrb.r, ltrb.b]
         console.log("sqlparams", sqlparams);
         var sql = "SELECT ST_ASGEOJSON(geom_way) as jsontext \
                       FROM ch_2po_4pgr \
@@ -91,7 +92,7 @@ query('select min(kmh) as kmhmin, max(kmh) kmhmax, 15 maxzoom, 3 mapversion from
                           )\
                         )";
         console.log("sql",sql);*/
-        query(sql,[],function (err, rows, result) {
+        query(sql,sqlparams,function (err, rows, result) {
           if (err) console.log(err);
           res.json({
             type: "FeatureCollection",

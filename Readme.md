@@ -1,7 +1,7 @@
 # geojson vector maps
 
-Used libs
-=========
+Used libs & docs
+================
 * links from the email: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames, http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 * obviously d3
 * http://leafletjs.com/

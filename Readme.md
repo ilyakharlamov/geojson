@@ -9,7 +9,8 @@ Used libs
 Installation
 ============
 1. call in psql: CREATE EXTENSION postgis;
-2. edit db.config.json
+2. ./psql databasename < dump.sql 
+3. edit db.config.json
 
 Usage
 =====

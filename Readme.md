@@ -2,8 +2,10 @@
 
 Used libs
 =========
-* https://gist.github.com/ZJONSSON/5529395
+* links from the email: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames, http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+* obviously d3
 * http://leafletjs.com/
+* https://gist.github.com/ZJONSSON/5529395
 * node modules: express, pg, lodash
 
 Installation

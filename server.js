@@ -22,14 +22,6 @@ query('select min(kmh) as kmhmin, max(kmh) kmhmax, 18 maxzoom, 3 mapversion from
   app.get('/api/1/constants', function (req, res, next) {
     res.jsonp(constants);
   });
-  (function fill_zoomToLessOrEqualsKmh_iife () {
-    var step = (constants.kmhmax - constants.kmhmin) / constants.maxzoom;
-    var i = constants.maxzoom + 1;
-    while (i--) {
-      zoomToLessOrEqualsKmh[i] = constants.kmhmax - step * i;
-    }
-    console.log("zoomToLessOrEqualsKmh", zoomToLessOrEqualsKmh);
-  })();
   app.get('/api/1/map-version/:mapversion/vector/:z/:x/:y', function (req, res, next) {
     console.log(req.params);
       try {
@@ -40,11 +32,12 @@ query('select min(kmh) as kmhmin, max(kmh) kmhmax, 18 maxzoom, 3 mapversion from
 
         var ltrb = geoutil.ltrb(z,x,y);
         
-        var sqlparams = [zoomrules(z).kmh, ltrb.l, ltrb.t, ltrb.r, ltrb.b]
+        var sqlparams = [zoomrules(z).kmh, zoomrules(z).clazz, ltrb.l, ltrb.t, ltrb.r, ltrb.b]
         console.log("sqlparams", sqlparams);
         var sql = "SELECT ST_ASGEOJSON(geom_way) as jsontext \
                       FROM ch_2po_4pgr \
                       WHERE kmh >= $1::numeric\
+                       and clazz <= $2::numeric\
                        and ST_INTERSECTS\
                        (\
                           ch_2po_4pgr.geom_way\
@@ -54,46 +47,21 @@ query('select min(kmh) as kmhmin, max(kmh) kmhmax, 18 maxzoom, 3 mapversion from
                             (\
                               ST_POINT\
                               (\
-                                $2::numeric\
-                                ,$3::numeric\
+                                $3::numeric\
+                                ,$4::numeric\
                               )\
                               ,ST_POINT\
                               (\
-                                $4::numeric\
-                                ,$5::numeric\
+                                $5::numeric\
+                                ,$6::numeric\
                               )\
                             )\
                            ,4326\
                           )\
                         )";
-
-       /* sql = "SELECT ST_ASGEOJSON(geom_way) as jsontext \
-                      FROM ch_2po_4pgr \
-                      WHERE kmh >= "+sqlparams[0]+"\
-                       and ST_INTERSECTS\
-                       (\
-                          ch_2po_4pgr.geom_way\
-                          ,ST_SETSRID\
-                          (\
-                            ST_MAKEBOX2D\
-                            (\
-                              ST_POINT\
-                              (\
-                                "+sqlparams[1]+"\
-                                ,"+sqlparams[2]+"\
-                              )\
-                              ,ST_POINT\
-                              (\
-                                "+sqlparams[3]+"\
-                                ,"+sqlparams[4]+"\
-                              )\
-                            )\
-                           ,4326\
-                          )\
-                        )";
-        console.log("sql",sql);*/
         query(sql,sqlparams,function (err, rows, result) {
           if (err) console.log(err);
+          res.setHeader('Cache-Control', 'public, max-age=31557600')
           res.json({
             type: "FeatureCollection",
             features: _.pluck(rows,'jsontext').map(JSON.parse).map(function(i){return {type: "Feature", geometry:i}})

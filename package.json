@@ -1,12 +1,12 @@
 {
   "name": "geojson",
   "version": "1.0.0",
-  "description": "A directed and undirected multi-graph library",
+  "description": "A vector geojson",
   "author": "Ilya Kharlamov <ilya.kharlamov@gmail.com>",
   "main": "index.js",
   "keywords": [
     "geojson",
-    "algorithms"
+    "maps"
   ],
   "dependencies": {
     "express": "4.13.3",

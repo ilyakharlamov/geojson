@@ -9,7 +9,6 @@
 	<script src="js/leaflet-hash.js"></script>
 	<script src="js/d3.v3.min.js" charset="utf-8"></script>
 	<script src="js/TileLayer.d3_geoJSON.js"></script>
-	
 
 </head><body>
 
@@ -17,14 +16,16 @@
 
 <script>
 
-	(function iife () {
-		map = L.map(map).setView([47.0576, 6.9563], 15);
+	function init (constants) {
+		console.log("constants", constants);
+		map = L.map(map).setView([47.0576, 6.9563], constants.maxzoom);
 		var hash = new L.Hash(map);
 		map._initPathRoot();
-		var geojsonURL = "/api/1/map-version/3/vector/{z}/{x}/{y}.json";
+		var geojsonURL = "/api/1/map-version/"+constants.mapversion+"/vector/{z}/{x}/{y}.json";
 		new L.TileLayer.d3_geoJSON(geojsonURL, {class:"river"}).addTo(map);
-	})();
+	}
 
 	
 </script>
+<script src="/api/1/constants?callback=init"></script>
 </body></html>

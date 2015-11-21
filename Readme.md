@@ -16,4 +16,5 @@ Installation
 
 Usage
 =====
-navigate to 8080
+1. node server.js
+2. navigate to 8080
